@@ -1,35 +1,36 @@
 "use strict";
 
-let money;
-let time;
+let money=prompt("Введите Ваш бюджет на месяц", '');
+let time=prompt("Введите дату в формате YYYY-MM-DD", '');
 
 let appData={
   budget: money,
   timeData: time,
-  expenses:{
-    // moneyLosingCompulsory:firstQuestion,
-    // howMuch:secondQuestion
-  },
+  expenses:{},
   optionalExpenses:{},
   income:[],
   savings:false
 };
 
-appData.money=+prompt("Введите Ваш бюджет на месяц");
-appData.time=prompt("Введите дату в формате YYYY-MM-DD");
-appData.expenses.moneyLosingCompulsory =prompt("Введите обязательную статью расходов в этом месяце");
-appData.expenses.howMuch=+prompt("Во сколько обойдется?");
+
+
+
+
+let a1=prompt("Введите обязательную статью расходов в этом месяце", ''),
+    a2=prompt("Во сколько обойдется?", '');
+
+    appData.expenses.a1=a2;
+    alert((appData.budget)/30 );
+
 
 console.log(appData.money);
 console.log(appData.time);
-console.log(appData.expenses.moneyLosingCompulsory);
-console.log(appData.expenses.howMuch);
-console.log("Бюджет на 1 день составит: ", (appData.money-appData.expenses.howMuch)/30);
 
 
 
 
-alert((appData.money-appData.expenses.howMuch)/30 );
+
+;
 
 
 
