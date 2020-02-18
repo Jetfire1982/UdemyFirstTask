@@ -1,4 +1,34 @@
 "use strict";
+let btn_StartCalc = document.getElementById('start'); //Начать расчет
+
+let div_BudgetValue = document.querySelector('.result .result-table .budget-value');
+let div_DaybudgetValue = document.querySelector('.result .result-table .daybudget-value');
+let div_LevelValue = document.querySelector('.result .result-table .level-value');
+let div_ExpensesValue = document.querySelector('.result .result-table .expenses-value');
+let div_OptionalExpensesValue = document.querySelector('.result .result-table .optionalexpenses-value');
+let div_IncomeValue = document.querySelector('.result .result-table .income-value');
+let div_MonthSavingsValue = document.querySelector('.result .result-table .monthsavings-value');
+let div_YearSavingsValue = document.querySelector('.result .result-table .yearsavings-value');
+
+let inp_ExpenItem = document.getElementsByClassName('expenses-item'); //Поля input с обязательными расходами
+
+let expensesBtn = document.getElementsByTagName('button')[0];
+let optionalExpensesBtn = document.getElementsByTagName('button')[1];
+let countBtn = document.getElementsByTagName('button')[2];
+
+let inp_OptExpItem = document.querySelectorAll('.optionalexpenses-item'); //Поля input для ввода необязательных расходов
+
+let inp_ChooseInc = document.querySelector('.choose-income');
+let check_checkSavings = document.querySelector('#savings');
+let inp_ChooseSum = document.querySelector("#sum");
+let inp_ChoosePersent = document.querySelector('#percent');
+let input_YearValue = document.querySelector('.year-value');
+let input_MonthValue = document.querySelector('.month-value');
+let input_DayValue = document.querySelector('.day-value');
+let label = document.querySelectorAll('label');
+
+
+
 
 let money, time;
 
