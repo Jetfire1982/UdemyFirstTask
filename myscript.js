@@ -30,17 +30,113 @@ let label = document.querySelectorAll('label');
 
 
 
+
+
 let money, time;
 
-function start() {
-  money = +prompt("Введите Ваш бюджет на месяц", '');
+btn_StartCalc.addEventListener('click', function () {
+  expensesBtn.disabled=false;
+  optionalExpensesBtn.disabled=false;
+  countBtn.disabled=false;
   time = prompt("Введите дату в формате YYYY-MM-DD", '');
+  money = +prompt("Введите Ваш бюджет на месяц", '');
   while (isNaN(money) || money == "" || money == null) { //isNaN - возвращает true когда у нас попадает туда не цифры, null - это если нажали отмена
-    money = +prompt("Введите Ваш бюджет на месяц", '');
+    money = +prompt("Ваш бюджет?", '');
   }
-}
+  appData.budget = money;
+  appData.timeData = time;
+  div_BudgetValue.textContent = money.toFixed();
+  input_YearValue.value = new Date(Date.parse(time)).getFullYear();
+  input_MonthValue.value = new Date(Date.parse(time)).getMonth() + 1;
+  input_DayValue.value = new Date(Date.parse(time)).getDate();
 
-start();
+
+});
+
+expensesBtn.addEventListener('click', function () {
+  let sum = 0;
+  for (let i = 0; i < inp_ExpenItem.length; i++) {
+    let a = inp_ExpenItem[i].value, //тут будет наименование нашего расхода
+      b = inp_ExpenItem[++i].value; //цена
+    if ((typeof (a)) === 'string' && (typeof (a)) != null && (typeof (b)) != null && a != '' && b != '' &&
+      a.length < 50) {
+      console.log("done");
+      appData.expenses[a] = b;
+      sum += +b;
+      /*т.о. ответ пользователя об обязательной статье расходов будет являться свойством обьекта expenses, а 
+        равняться это будет значению b т.о. у нас получилась пара ключ - значение */
+    } else {
+      i--;
+    }
+  }
+  div_ExpensesValue.textContent = sum;
+});
+
+optionalExpensesBtn.addEventListener('click', function () {
+  for (let i = 0; i < inp_OptExpItem.length; i++) {
+    appData.optionalExpenses[i] = inp_OptExpItem[i].value;
+    div_OptionalExpensesValue.textContent += appData.optionalExpenses[i] + ' ';
+  }
+});
+
+countBtn.addEventListener('click', function () {
+  if (appData.budget != undefined) {
+    appData.moneyPerDay = ((appData.budget-(+div_ExpensesValue.innerHTML)) / 30).toFixed(); //создаем новое свойство moneyPerDay внутри нашего объекта 
+    div_DaybudgetValue.textContent = appData.moneyPerDay;
+
+    if (appData.moneyPerDay < 100) {
+      div_LevelValue.textContent = "Минимальный уровень достатка";
+    } else if (appData.moneyPerDay > 100 && appData.moneyPerDay < 2000) {
+      div_LevelValue.textContent = "Средний уровень достатка";
+    } else if (appData.moneyPerDay > 2000) {
+      div_LevelValue.textContent = "Высокий уровень достатка";
+    } else {
+      div_LevelValue.textContent = "Произошла ошибка";
+    }
+  } else {
+    div_DaybudgetValue.textContent = 'Произошла ошибка';
+  }
+});
+
+
+inp_ChooseInc.addEventListener('input', function () {
+  let items = inp_ChooseInc.value;
+  appData.income = items.split(", ");
+  div_IncomeValue.textContent = appData.income;
+});
+
+check_checkSavings.addEventListener('click', function () {
+  if (appData.savings == true) {
+    appData = false;
+  } else {
+    appData.savings = true;
+  }
+});
+
+inp_ChooseSum.addEventListener('input', function () {
+  if (appData.savings == true) {
+    let sum = +inp_ChooseSum.value,
+      percent = +inp_ChoosePersent.value;
+    appData.monthIncome = sum / 100 / 12 * percent; //создаем новое свойство monthIncome, которая будет содержать прибыль за месяц
+    appData.yearIncome = sum / 100 * percent;
+
+    div_MonthSavingsValue.textContent = appData.monthIncome.toFixed(1);
+    div_YearSavingsValue.textContent = appData.yearIncome.toFixed(1);
+
+  }
+});
+
+inp_ChoosePersent.addEventListener('input', function() {
+  if (appData.savings == true) {
+    let sum = +inp_ChooseSum.value,
+      percent = +inp_ChoosePersent.value;
+    appData.monthIncome = sum / 100 / 12 * percent; //создаем новое свойство monthIncome, которая будет содержать прибыль за месяц
+    appData.yearIncome = sum / 100 * percent;
+
+    div_MonthSavingsValue.textContent = appData.monthIncome.toFixed(1);
+    div_YearSavingsValue.textContent = appData.yearIncome.toFixed(1);
+  }
+});
 
 
 
@@ -50,83 +146,10 @@ let appData = {
   expenses: {},
   optionalExpenses: {},
   income: [],
-  savings: true,
-  chooseExpenses: function () {
-    for (let i = 0; i < 2; i++) {
-      let a = prompt("Введите обязательную статью расходов в этом месяце", ''),
-        b = prompt("Во сколько обойдется?", '');
-      if ((typeof (a)) === 'string' && (typeof (a)) != null && (typeof (b)) != null && a != '' && b != '' &&
-        a.length < 50) {
-        console.log("done");
-        appData.expenses[a] = b;
-        console.log(i);
-        /*т.о. ответ пользователя об обязательной статье расходов будет являться свойством обьекта expenses, а 
-          равняться это будет значению b т.о. у нас получилась пара ключ - значение */
-      } else {
-        i--;
-      }
-    }
-  },
-  detectDayBudget: function () {
-    appData.moneyPerDay = (appData.budget / 30).toFixed(); //создаем новое свойство moneyPerDay внутри нашего объекта 
-    alert("Ежедневный бюджет: " + appData.moneyPerDay);
-  },
-  detectLevel: function () {
-    if (appData.moneyPerDay < 100) {
-      console.log("Минимальный уровень достатка");
-    } else if (appData.moneyPerDay > 100 && appData.moneyPerDay < 2000) {
-      console.log("Средний уровень достатка");
-    } else if (appData.moneyPerDay > 2000) {
-      console.log("Высокий уровень достатка");
-    } else {
-      console.log("Произошла ошибка");
-    }
-  },
-  //Ниже представлена функция которая поможет нам рассчитать накопления с депозита если он есть
-  checkSavings: function () {
-    if (appData.savings == true) {
-      let save = +prompt("Какова сумма накоплений?"),
-        percent = +prompt("Под какой процент?");
-      appData.monthIncome = save / 100 / 12 * percent; //создаем новое свойство monthIncome, которая будет содержать прибыль за месяц
-      alert("Доход в месяц с вашего депозита: " + appData.monthIncome);
-    }
-  },
-  //Ниже представлена функция для определения необязательных расходов - будем заполнять объект optionalExpenses в нашей appData
-  chooseExpenses: function () {
-    for (let i = 0; i < 3; i++) {
-      appData.optionalExpenses[i] = prompt("Статья необязательных расходов?");
-    }
-  },
-  chooseIncome: function () {
-    //  
-    let items = prompt("Что принесет дополнительный доход? (Перечислите через запятую)", "");
-
-    if (typeof (items) != "string" || items == "" || typeof (items) == null) {
-      console.log("Вы ввели некорректные данные или не ввели их вовсе");
-    } else {
-      appData.income = items.split(", ");
-      appData.income.push(prompt("Может что-то еще?"));
-      appData.income.sort();
-    }
-
-    appData.income.forEach(function (itemmassive, i) {
-      alert("Способы доп. заработка: " + (i + 1) + " - " + itemmassive);
-    });
-  }
+  savings: false,
 }
 
-appData.chooseIncome();
-
-console.log("Наша программа включает в себя данные: ")
-for (let i in appData) {
-  console.log(i);
-}
-console.log(Object.keys(appData));
 
 
 
-// appData.chooseExpenses();
-// appData.detectDayBudget();
-// appData.detectLevel();
-// appData.checkSavings();
-// appData.chooseExpenses();
+
